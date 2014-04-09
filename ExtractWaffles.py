@@ -98,7 +98,7 @@ def crop_waffle(img):
     greyscale = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     lower_yellow = np.array([0,50,50])
     upper_yellow = np.array([70,255,255])
-    mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+    mask = cv2.inRange(hsv, np.uint8(lower_yellow), np.uint8(upper_yellow))
     kernel = np.ones((9,9),np.uint8)
     closed_mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
     masked_img = cv2.bitwise_and(greyscale,greyscale,mask = closed_mask)
@@ -120,8 +120,8 @@ def crop_waffle(img):
     return cv2.bitwise_and(img,img, mask= largest_blob_mask)
 
 def main():
-    waffle_folder_name = os.getcwd() + '\waffle_images'
-    new_img_dir = os.getcwd() + '\modified_waffle_images'
+    waffle_folder_name = os.getcwd() + '/waffles_images'
+    new_img_dir = os.getcwd() + '/modified_waffle_images'
     
     if not os.path.isdir(waffle_folder_name):
         os.makedirs(waffle_folder_name)
