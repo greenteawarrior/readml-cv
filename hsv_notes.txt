@@ -1,0 +1,14 @@
+An HSV ranges for identification of waffles:
+Dennis and I used [0,50,50] to [70,255,255] first.
+Based on experimentation today,
+[10, 20, 20] to [35, 255, 255] seems alright.
+
+H is the biggest determiner.
+~0 red
+~15-30 orange, brown, yellow
+~60-70 green
+~100 blue
+then magentas, purples etc.  up to 180.
+In the "changing colorspaces" tutorial, it goes through it and gives video capture HSV filtering code to play around with filters.
+
+Keep in mind when looking up HSV ranges that the H is scaled to [0,179] from [0,360).
