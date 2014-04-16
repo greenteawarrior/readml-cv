@@ -87,13 +87,17 @@ def display_image_and_wait(image):
     
 def print_rgb_hist(img, mask):
     color = ('b','g','r')
+    hist = []
     for i,col in enumerate(color):
-        histr = cv2.calcHist([img],[i],mask,[256],[0,256])
-        plt.plot(histr,color = col)
-        plt.xlim([0,256])
-    plt.show()
+        color_hist = cv2.calcHist([img],[i],mask,[4],[0,256])
+        color_hist = [num[0] for num in color_hist]
+        hist.append(color_hist)
+    return hist
+#        plt.plot(histr,color = col)
+#        plt.xlim([0,256])
+#    plt.show()
     
-def crop_waffle(img):
+def crop_mask_waffle(img):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     greyscale = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     lower_yellow = np.array([0,50,50])
@@ -116,8 +120,7 @@ def crop_waffle(img):
     shape = img.shape
     largest_blob_mask = np.zeros((shape[0],shape[1],1),np.uint8)
     cv2.fillPoly(largest_blob_mask, pts =[max_contour], color=(255,255,255))
-    print_rgb_hist(img,largest_blob_mask)
-    return cv2.bitwise_and(img,img, mask= largest_blob_mask)
+    return [cv2.bitwise_and(img,img, mask= largest_blob_mask), largest_blob_mask]
 
 def main():
     waffle_folder_name = os.getcwd() + '/waffles_images'
@@ -132,10 +135,9 @@ def main():
         loaded_pic = cv2.imread(waffle_folder_name + '/' + pic) 
         print 'reading: ' + waffle_folder_name + '/' + pic
         new_img_name = 'waffle_pic_'+ str(index) + '.jpg'
-        cropped_pic = crop_waffle(loaded_pic)
-        display_image_and_wait(cropped_pic)
+        cropped_pic = crop_mask_waffle(loaded_pic)[0]
+        hist = print_rgb_hist(loaded_pic, crop_mask_waffle(loaded_pic)[1])
+#        display_image_and_wait(cropped_pic)
         cv2.imwrite(new_img_dir + '/' + new_img_name,cropped_pic)
         
-
 main()
-
